@@ -97,6 +97,10 @@ textarea{min-height:80px;resize:vertical;}
       <input type="text" id="b-name" placeholder="e.g. Marcus Thompson">
       <label>Business Name</label>
       <input type="text" id="b-company" placeholder="e.g. BHI Roofing">
+      <div class="field-row" style="margin-top:14px;">
+        <div><label>Client Title / Role</label><input type="text" id="b-role" placeholder="e.g. Owner, CEO"></div>
+        <div></div>
+      </div>
       <div class="field-row">
         <div><label>Client Email</label><input type="text" id="b-email" placeholder="e.g. marcus@bhiroof.com"></div>
         <div><label>Proposal Date</label><input type="date" id="b-date"></div>
@@ -168,10 +172,32 @@ textarea{min-height:80px;resize:vertical;}
 
     <div class="prop-section">
       <div class="prop-section-label">Electronic Signature</div>
-      <div class="prop-row"><div class="prop-row-label">Client Signature</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
-      <div class="prop-row"><div class="prop-row-label">Title / Role</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
-      <div class="prop-row"><div class="prop-row-label">Date Signed</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
-      <div class="prop-row" style="margin-top:16px;"><div class="prop-row-label">OxMedia Studio</div><div class="prop-row-val"><div style="font-family:'Dancing Script',cursive;font-size:28px;color:#0d0d0d;">Lonnie Oxendine</div><div style="font-size:10px;color:#999;" id="oxmedia-sig-date"></div></div></div>
+      <div class="prop-row"><div class="prop-row-label">Business</div><div class="prop-row-val" id="p-sig-company"></div></div>
+      <div class="prop-row"><div class="prop-row-label">Title / Role</div><div class="prop-row-val" id="p-sig-role"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:24px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">Client Signature</div>
+          <div style="height:80px;border:1.5px dashed #c8c7c4;border-radius:6px;background:#fafaf8;"></div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">Date Signed</div>
+          <div style="height:80px;border:1.5px dashed #c8c7c4;border-radius:6px;background:#fafaf8;"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;">
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">OxMedia Studio Signature</div>
+          <div style="height:80px;border:1px solid #e2e1de;border-radius:6px;background:#fff;display:flex;align-items:center;padding:0 16px;">
+            <span style="font-family:'Dancing Script',cursive;font-size:32px;color:#0d0d0d;">Lonnie Oxendine</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">Date Signed</div>
+          <div style="height:80px;border:1px solid #e2e1de;border-radius:6px;background:#fff;display:flex;align-items:center;padding:0 16px;">
+            <span style="font-size:14px;color:#444;" id="oxmedia-sig-date"></span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="prop-section">
@@ -252,12 +278,15 @@ function generateProposal() {
   var delivery = document.getElementById('b-delivery').value;
   var term = document.getElementById('b-term').value;
   var notes = document.getElementById('b-notes').value.trim();
+  var role = document.getElementById('b-role').value.trim();
   var plan = plans[selectedPlan];
   var dateStr = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
   document.getElementById('p-date').textContent = dateStr;
   document.getElementById('p-name').textContent = name;
   document.getElementById('p-company').textContent = company;
   document.getElementById('oxmedia-sig-date').textContent = dateStr;
+  document.getElementById('p-sig-company').textContent = company || name;
+  document.getElementById('p-sig-role').textContent = role || '';
   document.getElementById('p-intro').innerHTML = 'Thank you for the opportunity to work with <strong>' + (company || name) + '</strong>. This proposal outlines the Conversion Layer System service agreed upon during our conversation, including everything that is included, the timeline, and the terms of our engagement. We look forward to turning more of your ad traffic into real customers.';
   document.getElementById('p-tier').textContent = plan.tier;
   document.getElementById('p-plan-name').textContent = plan.name;
