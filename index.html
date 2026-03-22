@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OxMedia Studio - Proposal Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--black:#0d0d0d;--white:#e8e8e8;--off:#f0f0ee;--muted:#999;--border:#c8c7c4;--borderl:#e2e1de;}
+html,body{min-height:100vh;background:var(--white);font-family:'Figtree',sans-serif;color:var(--black);}
+#builder-view{min-height:100vh;display:flex;flex-direction:column;}
+#proposal-view{display:none;}
+.top-bar{background:var(--black);padding:16px 40px;display:flex;justify-content:space-between;align-items:center;}
+.top-logo{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--white);}
+.btn-top{background:var(--white);color:var(--black);border:none;padding:10px 24px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Figtree',sans-serif;}
+.builder-body{flex:1;max-width:700px;margin:0 auto;padding:48px 24px 100px;width:100%;}
+.builder-title{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;letter-spacing:-0.03em;margin-bottom:8px;}
+.builder-sub{font-size:14px;color:var(--muted);margin-bottom:40px;}
+.section-block{margin-bottom:32px;}
+.section-heading{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--borderl);}
+label{display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:14px;}
+input[type="text"],input[type="date"],textarea,select{width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;font-family:'Figtree',sans-serif;color:var(--black);outline:none;transition:border-color 0.2s;}
+input:focus,textarea:focus,select:focus{border-color:var(--black);}
+textarea{min-height:80px;resize:vertical;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px;}
+.field-row label{margin-top:0;}
+.plan-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px;}
+.plan-card{border:1.5px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all 0.2s;background:var(--off);text-align:center;user-select:none;}
+.plan-card:hover{border-color:var(--black);}
+.plan-card.selected{background:var(--black);border-color:var(--black);}
+.pname{font-size:11px;font-weight:700;color:var(--black);margin-bottom:6px;line-height:1.3;}
+.pprice{font-size:22px;font-weight:900;letter-spacing:-0.02em;color:var(--black);}
+.pyr{font-size:11px;color:var(--muted);}
+.plan-card.selected .pname,.plan-card.selected .pprice,.plan-card.selected .pyr{color:#fff;}
+.btn-bottom{position:fixed;bottom:0;left:0;right:0;background:var(--black);padding:16px 40px;display:flex;justify-content:center;}
+.btn-bottom button{background:var(--white);color:var(--black);border:none;padding:14px 48px;border-radius:100px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Figtree',sans-serif;}
+.prop-controls{position:fixed;bottom:24px;right:24px;display:flex;gap:10px;z-index:100;}
+.btn-ctrl{padding:12px 20px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Figtree',sans-serif;border:1.5px solid var(--border);background:var(--white);color:var(--black);}
+.btn-ctrl.primary{background:var(--black);color:var(--white);border-color:var(--black);}
+.proposal-page{max-width:720px;margin:0 auto;padding:60px 48px;background:white;min-height:100vh;font-family:'Figtree',sans-serif;}
+.prop-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:28px;border-bottom:2.5px solid #0d0d0d;margin-bottom:36px;page-break-inside:avoid;}
+.prop-logo-text{font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#0d0d0d;}
+.prop-tagline{font-size:11px;color:#999;margin-top:3px;}
+.prop-meta{text-align:right;font-size:11px;color:#999;line-height:1.8;}
+.prop-meta strong{color:#0d0d0d;display:block;font-size:12px;}
+.prop-title-block{margin-bottom:32px;page-break-inside:avoid;}
+.prop-label-sm{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#999;margin-bottom:6px;}
+.prop-to{font-size:32px;font-weight:900;letter-spacing:-0.02em;color:#0d0d0d;line-height:1;margin-bottom:4px;}
+.prop-company{font-size:16px;color:#666;font-weight:500;}
+.prop-intro{background:#f0f0ee;border-radius:12px;padding:22px 26px;margin-bottom:32px;font-size:13.5px;line-height:1.75;color:#444;}
+.prop-section{margin-bottom:28px;}
+.prop-section-label{font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#999;padding-bottom:8px;border-bottom:1px solid #e2e1de;margin-bottom:14px;}
+.prop-plan{border:2px solid #0d0d0d;border-radius:12px;padding:22px 26px;margin-bottom:28px;page-break-inside:avoid;}
+.prop-plan-tier{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:4px;}
+.prop-plan-name{font-size:22px;font-weight:900;letter-spacing:-0.02em;color:#0d0d0d;margin-bottom:2px;}
+.prop-plan-sub{font-size:13px;color:#666;margin-bottom:14px;}
+.prop-plan-price{font-size:38px;font-weight:900;letter-spacing:-0.03em;color:#0d0d0d;line-height:1;margin-bottom:16px;}
+.prop-plan-price span{font-size:14px;font-weight:400;color:#999;}
+.prop-plan-divider{border:none;border-top:1px solid #e2e1de;margin:14px 0;}
+.prop-features{list-style:none;display:flex;flex-direction:column;gap:8px;page-break-inside:avoid;}
+.prop-features li{font-size:13px;color:#444;display:flex;gap:10px;line-height:1.5;page-break-inside:avoid;}
+.prop-features li::before{content:'\2713';font-weight:800;color:#0d0d0d;flex-shrink:0;}
+.prop-row{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid #f0f0ee;font-size:13px;page-break-inside:avoid;}
+.prop-row:last-child{border-bottom:none;}
+.prop-row-label{font-weight:700;color:#0d0d0d;min-width:180px;flex-shrink:0;}
+.prop-row-val{color:#444;line-height:1.6;}
+.sig-block{display:flex;flex-direction:column;gap:6px;}
+.sig-label-sm{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;}
+.sig-name-script{font-family:'Dancing Script',cursive;font-size:28px;color:#0d0d0d;}
+.sig-ts-text{font-size:10px;color:#999;}
+.prop-footer{margin-top:36px;padding-top:20px;border-top:1px solid #e2e1de;display:flex;justify-content:space-between;align-items:flex-end;page-break-inside:avoid;}
+.prop-footer-brand{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#0d0d0d;}
+.prop-footer-motto{font-size:11px;color:#999;font-style:italic;margin-top:4px;}
+.prop-footer-contact{text-align:right;font-size:11px;color:#999;line-height:1.8;}
+@media print{
+  .prop-controls{display:none!important;}
+  body{background:white;}
+  @page{size:letter;margin:0.65in;}
+  .proposal-page{padding:0;max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div id="builder-view">
+  <div class="top-bar">
+    <div class="top-logo">OxMedia Studio - Proposal Builder</div>
+    <button class="btn-top" onclick="generateProposal()">Generate Proposal</button>
+  </div>
+  <div class="builder-body">
+    <div class="builder-title">Build Your Proposal</div>
+    <div class="builder-sub">Fill in the details below - takes about 2 minutes.</div>
+    <div class="section-block">
+      <div class="section-heading">Client Information</div>
+      <label>Client Full Name</label>
+      <input type="text" id="b-name" placeholder="e.g. Marcus Thompson">
+      <label>Business Name</label>
+      <input type="text" id="b-company" placeholder="e.g. BHI Roofing">
+      <div class="field-row">
+        <div><label>Client Email</label><input type="text" id="b-email" placeholder="e.g. marcus@bhiroof.com"></div>
+        <div><label>Proposal Date</label><input type="date" id="b-date"></div>
+      </div>
+    </div>
+    <div class="section-block">
+      <div class="section-heading">Plan Selected</div>
+      <div class="plan-cards">
+        <div class="plan-card" id="plan-card-1" onclick="selectPlan(1)"><div class="pname">The Foundation</div><div class="pprice">$1,499</div><div class="pyr">/ yr</div></div>
+        <div class="plan-card selected" id="plan-card-2" onclick="selectPlan(2)"><div class="pname">The Conversion System</div><div class="pprice">$3,000</div><div class="pyr">/ yr</div></div>
+        <div class="plan-card" id="plan-card-3" onclick="selectPlan(3)"><div class="pname">The Full System</div><div class="pprice">$5,000</div><div class="pyr">/ yr</div></div>
+      </div>
+    </div>
+    <div class="section-block">
+      <div class="section-heading">Timeline and Delivery</div>
+      <div class="field-row">
+        <div><label>Estimated Delivery</label>
+          <select id="b-delivery"><option>24 hours</option><option>3-5 business days</option><option>5-7 business days</option></select>
+        </div>
+        <div><label>Contract Term</label>
+          <select id="b-term"><option>12 months (1 year)</option><option>24 months (2 years)</option><option>36 months (3 years)</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="section-block">
+      <div class="section-heading">Additional Notes (Optional)</div>
+      <label>Custom Notes</label>
+      <textarea id="b-notes" placeholder="Any specific details or personalized notes for this client..."></textarea>
+    </div>
+  </div>
+  <div class="btn-bottom"><button onclick="generateProposal()">Generate Proposal</button></div>
+</div>
+
+<div id="proposal-view">
+  <div class="prop-controls">
+    <button class="btn-ctrl" onclick="showBuilder()">Back to Edit</button>
+    <button class="btn-ctrl primary" onclick="window.print()">Save as PDF</button>
+  </div>
+  <div class="proposal-page">
+
+    <div class="prop-header">
+      <div><div class="prop-logo-text">OxMedia Studio</div><div class="prop-tagline">Conversion Layer Method</div></div>
+      <div class="prop-meta"><strong>Service Proposal</strong><span id="p-date"></span></div>
+    </div>
+
+    <div class="prop-title-block">
+      <div class="prop-label-sm">Prepared for</div>
+      <div class="prop-to" id="p-name"></div>
+      <div class="prop-company" id="p-company"></div>
+    </div>
+
+    <div class="prop-intro" id="p-intro"></div>
+
+    <div class="prop-plan">
+      <div class="prop-plan-tier" id="p-tier"></div>
+      <div class="prop-plan-name" id="p-plan-name"></div>
+      <div class="prop-plan-sub" id="p-plan-sub"></div>
+      <div class="prop-plan-price" id="p-plan-price"></div>
+      <hr class="prop-plan-divider">
+      <ul class="prop-features" id="p-features"></ul>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Timeline and Delivery</div>
+      <div class="prop-row"><div class="prop-row-label">Estimated Delivery</div><div class="prop-row-val" id="p-delivery"></div></div>
+      <div class="prop-row"><div class="prop-row-label">Contract Term</div><div class="prop-row-val" id="p-term"></div></div>
+      <div class="prop-row"><div class="prop-row-label">30-Day Follow-Up</div><div class="prop-row-val">Included. One month after launch we meet to review results and make any final adjustments.</div></div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Electronic Signature</div>
+      <div class="prop-row"><div class="prop-row-label">Client Signature</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
+      <div class="prop-row"><div class="prop-row-label">Title / Role</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
+      <div class="prop-row"><div class="prop-row-label">Date Signed</div><div class="prop-row-val" style="min-height:48px;border-bottom:1.5px solid #0d0d0d;flex:1;"></div></div>
+      <div class="prop-row" style="margin-top:16px;"><div class="prop-row-label">OxMedia Studio</div><div class="prop-row-val"><div style="font-family:'Dancing Script',cursive;font-size:28px;color:#0d0d0d;">Lonnie Oxendine</div><div style="font-size:10px;color:#999;" id="oxmedia-sig-date"></div></div></div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Payment Terms</div>
+      <div class="prop-row"><div class="prop-row-label">Payment</div><div class="prop-row-val">Payment is due in full upon signing. Work begins immediately upon receipt of payment.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Accepted Methods</div><div class="prop-row-val">ACH bank transfer and Stripe Link (no fee). Credit and debit card payments are accepted and subject to a 3% transaction fee.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Refund Policy</div><div class="prop-row-val">All sales are final once work has commenced due to the custom nature of each build.</div></div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Revision Policy</div>
+      <div class="prop-row"><div class="prop-row-label">Included Revisions</div><div class="prop-row-val">3 rounds of revisions are included after initial delivery.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Additional Revisions</div><div class="prop-row-val">Any edits beyond the included revisions are billed at $75 per update.</div></div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Hosting and Domain Terms</div>
+      <div class="prop-row"><div class="prop-row-label">Hosting</div><div class="prop-row-val">OxMedia Studio hosts and manages your Conversion Layer Page for the full contract term.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Domain Ownership</div><div class="prop-row-val">The domain and hosting remain under OxMedia Studio management for the duration of the contract.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Renewal</div><div class="prop-row-val">Clients will be notified 30 days before contract expiry with renewal options.</div></div>
+    </div>
+
+    <div class="prop-section" id="p-notes-section" style="display:none;">
+      <div class="prop-section-label">Additional Notes</div>
+      <div style="font-size:13px;color:#444;line-height:1.75;" id="p-notes"></div>
+    </div>
+
+    <div class="prop-section" style="margin-top:36px;">
+      <div class="prop-section-label">Terms and Conditions</div>
+      <div class="prop-row"><div class="prop-row-label">Scope of Work</div><div class="prop-row-val">OxMedia Studio agrees to design, build, and host a custom Conversion Layer Page and any additional deliverables outlined in the selected plan. All work is performed exclusively for the client named in this proposal and may not be transferred or assigned to a third party without written consent.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Intellectual Property</div><div class="prop-row-val">Upon full payment, the client receives a license to use the Conversion Layer Page for the duration of the contract term. OxMedia Studio retains ownership of the underlying code, design framework, and methodology. The domain and hosting infrastructure remain under OxMedia Studio management.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Client Responsibilities</div><div class="prop-row-val">The client agrees to provide all required materials including ad creative, branding assets, business information, and CTA details within 5 business days of signing. Delays in providing materials may affect the delivery timeline.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Revisions</div><div class="prop-row-val">The selected plan includes 3 rounds of revisions after initial delivery. A revision round is defined as a single consolidated list of changes submitted at one time. Additional revisions are billed at $75 per update. Revision requests must be submitted within 30 days of delivery.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Payment</div><div class="prop-row-val">Full payment is due upon signing. Work does not commence until payment is received. OxMedia Studio accepts ACH bank transfer and Stripe Link at no additional cost. Credit and debit card payments are subject to a 3% transaction fee. All prices are in USD.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Refunds</div><div class="prop-row-val">All sales are final once work has commenced. Due to the custom nature of each build, OxMedia Studio does not offer refunds after work has begun. In the event OxMedia Studio is unable to deliver the agreed scope, a prorated refund will be issued at OxMedia Studio's discretion.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Hosting and Continuity</div><div class="prop-row-val">OxMedia Studio hosts and manages the Conversion Layer Page for the full contract term. If the client does not renew, the page will be deactivated. Clients receive a 30-day renewal notice before expiry. OxMedia Studio is not liable for revenue lost due to a lapsed or cancelled subscription.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Confidentiality</div><div class="prop-row-val">Both parties agree to keep the terms of this agreement and any shared business information confidential. OxMedia Studio may reference the client as a past or current client for marketing purposes unless the client requests otherwise in writing.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Limitation of Liability</div><div class="prop-row-val">OxMedia Studio's total liability is limited to the amount paid by the client for the current contract term. OxMedia Studio is not responsible for indirect, incidental, or consequential damages including lost revenue or business interruption.</div></div>
+      <div class="prop-row"><div class="prop-row-label">Governing Law</div><div class="prop-row-val">This agreement is governed by the laws of the State of Florida. Any disputes shall be resolved in the courts of Hillsborough County, Florida.</div></div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-label">Agreement</div>
+      <div style="font-size:13px;color:#444;line-height:1.85;margin-bottom:16px;">By signing this proposal, both parties agree to the scope of work, pricing, timeline, and terms and conditions outlined in this document. This proposal constitutes a binding service agreement between the client and OxMedia Studio upon receipt of payment.</div>
+      <div style="font-size:13px;color:#444;line-height:1.85;margin-bottom:16px;">The client confirms that they have read and understood all sections of this proposal, that they are authorized to enter into this agreement on behalf of the business named above, and that they consent to OxMedia Studio commencing work upon payment.</div>
+      <div style="font-size:13px;color:#444;line-height:1.85;">OxMedia Studio confirms its commitment to delivering the agreed scope of work as outlined in this proposal within the stated timeline, subject to timely receipt of all required materials from the client.</div>
+    </div>
+
+    <div class="prop-footer">
+      <div><div class="prop-footer-brand">OxMedia Studio</div><div class="prop-footer-motto">Increase your sales, without increasing your ad spend.</div></div>
+      <div class="prop-footer-contact"><div>Lonnie Oxendine</div><div>Lonnie@oxmediastudio.com</div><div>(813) 777-0864</div><div>Tampa, Florida</div></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var selectedPlan = 2;
+var f1 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad-to-page message alignment - visitor lands and immediately feels at home','Trust and social proof section - reviews, ratings, and credibility signals','Single CTA design - one focused action, no distractions','Mobile-first responsive design - optimized for ad traffic on all devices','Hosted and managed by OxMedia Studio for the full contract term','3 included revisions after delivery'];
+var f2 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad-to-page message alignment - visitor lands and immediately feels at home','Trust and social proof section - reviews, ratings, and credibility signals','Single CTA design - one focused action, no distractions','Mobile-first responsive design - optimized for ad traffic on all devices','Facebook and Google ad copy rewrite - new copy to drive more clicks from the same budget','Ad messaging aligned to page - consistent language from ad click all the way to the call','Full funnel consistency - every touchpoint reinforces the same promise','Hosted and managed by OxMedia Studio for the full contract term','3 included revisions after delivery'];
+var f3 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad-to-page message alignment - visitor lands and immediately feels at home','Trust and social proof section - reviews, ratings, and credibility signals','Single CTA design - one focused action, no distractions','Mobile-first responsive design - optimized for ad traffic on all devices','Facebook and Google ad copy rewrite - new copy to drive more clicks from the same budget','Ad messaging aligned to page - consistent language from ad click all the way to the call','Full funnel consistency - every touchpoint reinforces the same promise','Retargeting ad copy - written to re-engage people who already interacted with your ads','Avoid ad fatigue - different messaging for warm audiences vs cold prospects','Maximum revenue from existing traffic - squeeze more value from every dollar already spent','Hosted and managed by OxMedia Studio for the full contract term','3 included revisions after delivery'];
+var plans = {
+  1:{tier:'Tier 1',name:'The Foundation',sub:'Conversion Page only',price:'$1,499 <span>/ yr</span>',features:f1},
+  2:{tier:'Tier 2',name:'The Conversion System',sub:'Conversion Page + Ad Copy Improvement',price:'$3,000 <span>/ yr</span>',features:f2},
+  3:{tier:'Tier 3',name:'The Full System',sub:'Conversion Page + Ad Copy + Retargeting Ads',price:'$5,000 <span>/ yr</span>',features:f3}
+};
+function selectPlan(n) {
+  selectedPlan = n;
+  document.getElementById('plan-card-1').classList.remove('selected');
+  document.getElementById('plan-card-2').classList.remove('selected');
+  document.getElementById('plan-card-3').classList.remove('selected');
+  document.getElementById('plan-card-' + n).classList.add('selected');
+}
+function generateProposal() {
+  var name = document.getElementById('b-name').value.trim() || 'Valued Client';
+  var company = document.getElementById('b-company').value.trim() || '';
+  var dateVal = document.getElementById('b-date').value;
+  var delivery = document.getElementById('b-delivery').value;
+  var term = document.getElementById('b-term').value;
+  var notes = document.getElementById('b-notes').value.trim();
+  var plan = plans[selectedPlan];
+  var dateStr = dateVal ? new Date(dateVal + 'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}) : new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('p-date').textContent = dateStr;
+  document.getElementById('p-name').textContent = name;
+  document.getElementById('p-company').textContent = company;
+  document.getElementById('oxmedia-sig-date').textContent = dateStr;
+  document.getElementById('p-intro').innerHTML = 'Thank you for the opportunity to work with <strong>' + (company || name) + '</strong>. This proposal outlines the Conversion Layer Method service agreed upon during our conversation, including everything that is included, the timeline, and the terms of our engagement. We look forward to turning more of your ad traffic into real customers.';
+  document.getElementById('p-tier').textContent = plan.tier;
+  document.getElementById('p-plan-name').textContent = plan.name;
+  document.getElementById('p-plan-sub').textContent = plan.sub;
+  document.getElementById('p-plan-price').innerHTML = plan.price;
+  var featEl = document.getElementById('p-features');
+  featEl.innerHTML = '';
+  plan.features.forEach(function(f) { var li = document.createElement('li'); li.textContent = f; featEl.appendChild(li); });
+  document.getElementById('p-delivery').textContent = delivery;
+  document.getElementById('p-term').textContent = term;
+  if (notes) { document.getElementById('p-notes-section').style.display = 'block'; document.getElementById('p-notes').textContent = notes; }
+  else { document.getElementById('p-notes-section').style.display = 'none'; }
+  document.getElementById('builder-view').style.display = 'none';
+  document.getElementById('proposal-view').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+function showBuilder() {
+  document.getElementById('proposal-view').style.display = 'none';
+  document.getElementById('builder-view').style.display = 'flex';
+}
+document.getElementById('b-date').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
