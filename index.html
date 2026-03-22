@@ -184,6 +184,11 @@ textarea{min-height:80px;resize:vertical;}
           <div style="height:80px;border:1.5px dashed #c8c7c4;border-radius:6px;background:#fafaf8;"></div>
         </div>
       </div>
+      <div style="margin-top:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">Secure Payment Link</div>
+        <a id="p-pay-link" href="#" style="font-size:13px;color:#0d0d0d;font-weight:600;word-break:break-all;text-decoration:underline;"></a>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px;">
         <div>
           <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:8px;">OxMedia Studio Signature</div>
@@ -260,9 +265,9 @@ var f1 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad
 var f2 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad-to-page message alignment - visitor lands and immediately feels at home','Trust and social proof section - reviews, ratings, and credibility signals','Single CTA design - one focused action, no distractions','Mobile-first responsive design - optimized for ad traffic on all devices','Facebook and Google ad copy rewrite - new copy to drive more clicks from the same budget','Ad messaging aligned to page - consistent language from ad click all the way to the call','Full funnel consistency - every touchpoint reinforces the same promise','Hosted and managed by OxMedia Studio for the full contract term','3 included revisions after delivery'];
 var f3 = ['Custom Conversion Layer Page built for your specific ad campaign','Ad-to-page message alignment - visitor lands and immediately feels at home','Trust and social proof section - reviews, ratings, and credibility signals','Single CTA design - one focused action, no distractions','Mobile-first responsive design - optimized for ad traffic on all devices','Facebook and Google ad copy rewrite - new copy to drive more clicks from the same budget','Ad messaging aligned to page - consistent language from ad click all the way to the call','Full funnel consistency - every touchpoint reinforces the same promise','Retargeting ad copy - written to re-engage people who already interacted with your ads','Avoid ad fatigue - different messaging for warm audiences vs cold prospects','Maximum revenue from existing traffic - squeeze more value from every dollar already spent','Hosted and managed by OxMedia Studio for the full contract term','3 included revisions after delivery'];
 var plans = {
-  1:{tier:'Tier 1',name:'The Foundation',sub:'Conversion Page only',price:'$1,499 <span>/ yr</span>',features:f1},
-  2:{tier:'Tier 2',name:'The Conversion System',sub:'Conversion Page + Ad Copy Improvement',price:'$3,000 <span>/ yr</span>',features:f2},
-  3:{tier:'Tier 3',name:'The Full System',sub:'Conversion Page + Ad Copy + Retargeting Ads',price:'$5,000 <span>/ yr</span>',features:f3}
+  1:{tier:'Tier 1',name:'The Foundation',sub:'Conversion Page only',price:'$1,499 <span>/ yr</span>',features:f1,link:'https://buy.stripe.com/5kQ00j7xB7Tx7vEaW24sE02'},
+  2:{tier:'Tier 2',name:'The Conversion System',sub:'Conversion Page + Ad Copy Improvement',price:'$3,000 <span>/ yr</span>',features:f2,link:'https://buy.stripe.com/28E8wPg471v9dU2c064sE01'},
+  3:{tier:'Tier 3',name:'The Full System',sub:'Conversion Page + Ad Copy + Retargeting Ads',price:'$5,000 <span>/ yr</span>',features:f3,link:'https://buy.stripe.com/4gM28r7xBflZ5nw2pw4sE00'}
 };
 function selectPlan(n) {
   selectedPlan = n;
@@ -287,6 +292,9 @@ function generateProposal() {
   document.getElementById('oxmedia-sig-date').textContent = dateStr;
   document.getElementById('p-sig-company').textContent = company || name;
   document.getElementById('p-sig-role').textContent = role || '';
+  var payLink = document.getElementById('p-pay-link');
+  payLink.href = plan.link;
+  payLink.textContent = plan.link;
   document.getElementById('p-intro').innerHTML = 'Thank you for the opportunity to work with <strong>' + (company || name) + '</strong>. This proposal outlines the Conversion Layer System service agreed upon during our conversation, including everything that is included, the timeline, and the terms of our engagement. We look forward to turning more of your ad traffic into real customers.';
   document.getElementById('p-tier').textContent = plan.tier;
   document.getElementById('p-plan-name').textContent = plan.name;
